@@ -108,6 +108,47 @@ class ProyectoController extends Controller
         
     }
 
+    public function show($id)
+    {
+        //
+        try {
+            DB::beginTransaction();
+            $proyecto = Proyecto::with('estatus','actividades_proyecto')->whereHas('usuarios_proyecto', function ($query){
+                $query->where('usuario_id',auth()->user()->id);
+            })->findorFail($id);
+            if($proyecto){
+                return response([
+                    "ok" =>true,
+                    "msg" =>"Sí existe el proyecto",
+                    "proyecto" => $proyecto
+                ],200);  
+            }
+                DB::rollBack();
+                return response([
+                    "ok" =>false,
+                    "msg" => "error",
+                    "proyecto" =>""
+                ],422);
+        } catch (Exception $e) {
+            report($e);
+            DB::rollBack();
+            return response([
+                "ok" =>false,
+                "msg" => "error",
+                "proyecto" =>""
+            ],422);            
+        }
+        DB::rollBack();
+
+        return response([
+            "ok" =>false,
+            "msg" => "error",
+            "proyecto" =>""
+        ],422);
+        
+    }
+
+
     public function update(Request $request, $id)
     {
         //

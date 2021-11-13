@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     //proyectos
     Route::get('/proyectos', [ProyectoController::class, 'index'])->name('proyectos');
     Route::post('/proyecto', [ProyectoController::class, 'store'])->name('proyecto.store');
+    Route::get('/proyecto/{id}/show', [ProyectoController::class, 'show'])->name('proyecto.show');
     Route::put('/proyecto/{id}', [ProyectoController::class, 'update'])->name('proyecto.update');
     
     //usuarios proyecto
