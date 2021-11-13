@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Proyecto;
 use App\Models\UsuarioProyectoActividad;
 use App\Models\UsuarioProyecto;
+use App\Models\EstatusActividad;
 
 class ProyectoActividadController extends Controller
 {
@@ -119,6 +120,51 @@ class ProyectoActividadController extends Controller
             "msg" => "error"
         ],422);
         
+    }
+
+    public function show($id,$proyecto_actividad_id)
+    {
+        //
+        try {
+            DB::beginTransaction();
+            $proyectoActividad = ProyectoActividad::with('estatus')->whereHas('proyecto', function ($query){
+                $query->whereHas('usuarios_proyecto', function ($query2){
+                    $query2->where('usuario_id',auth()->user()->id)
+                    ->Where('role_proyecto_id',1);
+                });
+            })->where('proyecto_id',$id)->findorFail($proyecto_actividad_id);
+
+            if($proyectoActividad){
+            
+                return response([
+                    "ok" =>true,
+                    "msg" =>"Sí existe el proyecto",
+                    "proyectoActividad" => $proyectoActividad
+                ],200);  
+            }
+            
+            DB::rollBack();
+            return response([
+                "ok" =>false,
+                "msg" => "error",
+                "proyectoActividad" => $proyectoActividad
+            ],422);   
+        } catch (Exception $e) {
+            report($e);
+            DB::rollBack();
+            return response([
+                "ok" =>false,
+                "msg" => "error",
+                "proyectoActividad" => ""
+            ],422);            
+        }
+        DB::rollBack();
+
+        return response([
+            "ok" =>false,
+            "msg" => "error",
+            "proyectoActividad" => ""
+        ],422);
     }
 
     public function update(Request $request,$id,$proyecto_actividad_id)

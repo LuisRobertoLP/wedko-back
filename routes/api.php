@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('/proyecto/{id}/actividades', [ProyectoActividadController::class, 'index'])->name('proyectos.actividades');
     Route::post('/proyecto/{id}/actividad/store', [ProyectoActividadController::class, 'store'])->name('proyecto.actividad.store');
     Route::put('/proyecto/{id}/actividad/{proyecto_actividad_id}/update', [ProyectoActividadController::class, 'update'])->name('proyecto.actividad.update');
+    Route::get('/proyecto/{id}/actividad/{proyecto_actividad_id}/show', [ProyectoActividadController::class, 'show'])->name('proyecto.actividad.show');
     
     //usuarios proyecto actividad
     Route::get('/proyecto/{id}/actividad/{proyecto_actividad_id}/usuarios', [ProyectoActividadUsuariosController::class, 'index'])->name('proyectos.actividad.usuarios');

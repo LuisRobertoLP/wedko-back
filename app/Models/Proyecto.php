@@ -29,7 +29,7 @@ class Proyecto extends Model
     {
         return $this->hasMany(ProyectoComentario::class,'proyecto_id','id');
     }
-    public function actividades_proyecto()
+    public function proyecto_actividad()
     {
         return $this->hasMany(ProyectoActividad::class,'proyecto_id','id');
     }

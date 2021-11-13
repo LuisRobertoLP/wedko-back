@@ -25,7 +25,7 @@ class ProyectoActividad extends Model
     }
     public function estatus()
     {
-        return $this->belongsTo(EstatusActividad::class,'estatus_proyecto_actividad_id','id');
+        return $this->belongsTo(EstatusProyectoActividad::class,'estatus_proyecto_actividad_id','id');
     }
     public function comentarios()
     {
