@@ -10,6 +10,7 @@ use App\Http\Controllers\Proyecto\ProyectoComentarioController;
 use App\Http\Controllers\Proyecto\ProyectoActividadController;
 use App\Http\Controllers\Proyecto\ProyectoActividadComentarioController;
 use App\Http\Controllers\Proyecto\ProyectoActividadUsuariosController;
+use App\Http\Controllers\Usuario\UsuarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::group(['middleware' => ['auth:api']], function () {
     //validar toke
     Route::get('/renew', [TokenController::class, 'renew']);
+
+    Route::get('/usuarios/{nombre}', [UsuarioController::class, 'index'])->name('usuarios');
 
     //proyectos
     Route::get('/proyectos', [ProyectoController::class, 'index'])->name('proyectos');

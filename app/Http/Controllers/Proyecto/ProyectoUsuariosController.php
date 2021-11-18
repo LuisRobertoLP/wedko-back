@@ -16,36 +16,26 @@ class ProyectoUsuariosController extends Controller
     public function index($id)
     {
         //
+        
         $usuarioProyecto = UsuarioProyecto::where('proyecto_id',$id)
         ->where('usuario_id',auth()->user()->id)
         ->Where('role_proyecto_id',1)
         ->get();
 
         if(!$usuarioProyecto->isEmpty()){
-            $usuarios = User::
-            with(['proyectos_usuario' => function($query) use ($id){
-                $query->with('role_proyecto')->where('proyecto_id',$id);
-            }])->
-            whereHas('proyectos_usuario', function ($query) use ($id){
-                $query->where('proyecto_id',$id);
-            })->get();
-            if(!$usuarios->isEmpty()){
-                return response([
-                    "ok" =>true,
-                    "msg" =>"Se han encontrado usuarios del proyecto",
-                    "usuarios" => $usuarios
-                ],200);
-            }else{
-                return response([
-                    "ok" =>false,
-                    "msg" =>"error, no se han encontrado usuarios del proyecto",
-                    "usuarios" => $usuarios
-                ],200);
-            }
+            $proyecto = Proyecto::with('estatus')->with(['usuarios_proyecto' => function($query) use ($id){
+                $query->with('role_proyecto','usuario');
+            }])->findorFail($id);
+        
+            return response([
+                "ok" =>true,
+                "msg" =>"Se han encontrado usuarios del proyecto",
+                "proyecto" => $proyecto
+            ],200);
         }
         return response([
             "ok" =>false,
-            "msg" =>"error, no se han encontrado usuarios de la actividad del proyecto",
+            "msg" =>"error, no se han encontrado usuarios del proyecto",
             "usuarios" => ''
         ],200);
         
