@@ -115,7 +115,9 @@ class ProyectoController extends Controller
             DB::beginTransaction();
             $proyecto = Proyecto::with('estatus','proyecto_actividad')->whereHas('usuarios_proyecto', function ($query){
                 $query->where('usuario_id',auth()->user()->id);
-            })->findorFail($id);
+            })->with(['usuarios_proyecto' => function($query) use ($id){
+                $query->with('role_proyecto','usuario')->where('usuario_id',auth()->user()->id);
+            }])->findorFail($id);
             if($proyecto){
                 return response([
                     "ok" =>true,
