@@ -18,29 +18,33 @@ class ProyectoComentarioController extends Controller
         //
         $usuarioProyecto = UsuarioProyecto::where('proyecto_id',$id)
         ->where('usuario_id',auth()->user()->id)
-        ->Where('role_proyecto_id',1)
         ->get();
 
         if(!$usuarioProyecto->isEmpty()){
-            $proyectoComentario = ProyectoComentario::with('usuario')->where('proyecto_id',$id)->get();
+            $proyecto = Proyecto::with(['comentarios' => function($query) use ($id){
+                $query->with('usuario');
+            }])->with(['usuarios_proyecto' => function($query) use ($id){
+                $query->with('role_proyecto','usuario')->where('usuario_id',auth()->user()->id);
+            }])->findorFail($id);
+            $proyectoComentario = ProyectoComentario::with('usuario','proyecto')->where('proyecto_id',$id)->get();
             if(!$proyectoComentario->isEmpty()){
                 return response([
                     "ok" =>true,
                     "msg" =>"Se han encontrado comentarios del proyecto",
-                    "comentarios" => $proyectoComentario
+                    "proyecto" => $proyecto
                 ],200);
             }else{
                 return response([
                     "ok" =>false,
                     "msg" =>"error, no se han encontrado comentarios del proyecto",
-                    "comentarios" => $proyectoComentario
+                    "proyecto" => $proyecto
                 ],200);
             }
         }
         return response([
             "ok" =>false,
             "msg" =>"error, no se han encontrado comentarios del proyecto",
-            "comentarios" => ''
+            "proyecto" => $proyecto
         ],200);
         
     }
