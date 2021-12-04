@@ -42,6 +42,43 @@ class ProyectoUsuariosController extends Controller
         
     }
 
+    public function buscar_usuario($id,$nombre)
+    {
+        //
+        $usuarioProyecto = UsuarioProyecto::where('proyecto_id',$id)
+        ->where('usuario_id',auth()->user()->id)
+        ->Where('role_proyecto_id',1)
+        ->get();
+        if(!$usuarioProyecto->isEmpty()){
+
+            $usuarios = User::where('name', 'like', '%' . $nombre . '%')
+            ->whereHas('proyectos_usuario', function ($query) use ($id){
+                $query->where('proyecto_id',$id);
+            })->get();
+
+            if(!$usuarios->isEmpty()){
+                return response([
+                    "ok" =>true,
+                    "msg" =>"Se han encontrado usuarios",
+                    "usuarios" => $usuarios
+                ],200);
+            }else{
+                return response([
+                    "ok" =>true,
+                    "msg" =>"No hay usuarios con ese nombre",
+                    "usuarios" => $usuarios
+                ],200);
+            }
+        }
+        
+        
+        return response([
+            "ok" =>false,
+            "msg" =>"error, no se han encontrado actividades del proyecto",
+            "proyectoActividad" => ''
+        ],200);
+        
+    }
     public function store(Request $request, $id)
     {
         //

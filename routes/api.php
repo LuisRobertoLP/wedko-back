@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     //usuarios proyecto
     Route::get('/proyecto/{id}/usuarios', [ProyectoUsuariosController::class, 'index'])->name('proyectos.usuarios');
     Route::post('/proyecto/{id}/usuario/store', [ProyectoUsuariosController::class, 'store'])->name('proyecto.usuario.store');
+    Route::get('/proyecto/{id}/buscar_usuario/{nombre}', [ProyectoUsuariosController::class, 'buscar_usuario'])->name('proyectos.buscar_usuario');
 
     //comentarios
     Route::get('/proyecto/{id}/comentarios', [ProyectoComentarioController::class, 'index'])->name('proyectos.comentarios');

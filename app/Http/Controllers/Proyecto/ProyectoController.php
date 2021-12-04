@@ -82,13 +82,15 @@ class ProyectoController extends Controller
                     DB::commit();
                     return response([
                         "ok" =>true,
-                        "msg" =>"Se ha creado el proyecto con exito"
+                        "msg" =>"Se ha creado el proyecto con exito",
+                        "proyecto" =>$proyecto
                     ],200);
                 }
                 DB::rollBack();
                 return response([
                     "ok" =>false,
-                    "msg" => "error"
+                    "msg" => "error",
+                    "proyecto" =>$proyecto
                 ],422);   
             
         } catch (Exception $e) {
@@ -96,14 +98,16 @@ class ProyectoController extends Controller
             DB::rollBack();
             return response([
                 "ok" =>false,
-                "msg" => "error"
+                "msg" => "error",
+                "proyecto" =>""
             ],422);            
         }
         DB::rollBack();
 
         return response([
             "ok" =>false,
-            "msg" => "error"
+            "msg" => "error",
+            "proyecto" =>""
         ],422);
         
     }
